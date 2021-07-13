@@ -6,7 +6,7 @@ import numpy as np
 import itertools
 import torch
 from skimage.transform import resize
-from data_processing.pytorch_connectomics.connectomics.model.utils.misc import SplitActivation
+from pytorch_connectomics.connectomics.model.utils.misc import SplitActivation
 
 
 def _forward(model, volume):

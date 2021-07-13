@@ -10,7 +10,7 @@ import json
 import cv2
 import base64
 import io
-from data_processing.pytorch_connectomics.connectomics.data.utils.data_io import readvol
+from pytorch_connectomics.connectomics.data.utils.data_io import readvol
 from matplotlib import pyplot as plt
 import sys
 import h5py
