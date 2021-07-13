@@ -1,0 +1,26 @@
+{% extends "templatebase.html" %}
+{% block content %}
+
+    <div class="px-4 py-3 my-3 text-center">
+        <h2 class="mb-3"> Welcome to Annotation Tool</h2>
+        <p> To start, load the .h5 file of the original and ground truth data OR a previous json file exported by this tool.</p>
+    </div>
+
+    <div class="mb-3">
+        <form method="POST" for="{{ modeform }}" action="{{ url_for('upload_file') }}" enctype="multipart/form-data">
+            <label for="formFileMultiple" class="form-label">Original .h5 data next.</label>
+            <p><input class="form-control" type="file" id="formFile" name="file_original"></p>
+            <label for="formFileMultiple" class="form-label">Ground Truth .h5 data next.</label>
+            <p><input class="form-control" type="file" id="formFile" name="file_gt"></p>
+            <label for="formFileMultiple" class="form-label">OR JSON file previously exported by this tool.</label>
+            <p><input class="form-control" type="file" id="formFile" name="file_json"></p>
+            <p class="mt-4">
+                <input type="submit" class="btn btn-secondary {{ modecurrent }}" value="Submit" >
+                <a type="button" class="btn btn-primary {{ modenext }}" href="{{ url_for('set_data', data_name=filename) }}">Start data proofread</a>
+            </p>
+        </form>
+    </div>
+
+
+
+{% endblock %}
