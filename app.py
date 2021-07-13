@@ -23,13 +23,18 @@ def open_data():
 #opening json for now
 @app.route('/upload', methods=['POST'])
 def upload_file():
+    if os.path.exists('./files'):
+        pass
+    else:
+        os.mkdir('./files')
+        
     file_original = request.files['file_original']
     file_gt = request.files['file_gt']
     file_json = request.files['file_json']
 
     # Check if there is files
     if file_original.filename == '' and file_gt.filename == '' and file_json.filename == '':
-        flash("Please, upload the original and ground truth .h5 files or a JSON file!")
+        flash("Please upload the original and ground truth .h5 files or a JSON file from a previous annotation session!")
 
     # Check if the process will start if .h5 files or a json.
     if file_original.filename != '' and file_gt.filename != '':
