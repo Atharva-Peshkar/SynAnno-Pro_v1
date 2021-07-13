@@ -1,0 +1,17 @@
+{% extends "templatebase.html" %}
+{% block content %}
+
+    <div>
+        <h2>You finalize the proofreading of your data! </h2>
+        <a>In total, there were XX data proofread: </a>
+        <a>Correct: xx </a>
+        <a>Incorrect: xx </a>
+        <a>Unsure: xx </a>
+    </div>
+    <div class="mt-4">
+        <a type="button" class="btn btn-primary {{ btn_status }}" href={{ url_for('export_data')}}>Save results</a>
+        <a type="button" class="btn btn-secondary ml-2 " href={{ url_for('finalize')}}>Open new data</a>
+    </div>
+
+
+{% endblock %}

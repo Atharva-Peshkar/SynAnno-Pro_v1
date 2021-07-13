@@ -1,0 +1,33 @@
+{% extends "templatebase.html" %}
+
+{% block content %}
+    <div class="container-fluid content-row mb-5 ">
+        <div class="row card-group">
+        {% for image in images %}
+                <div class="col-sm-12 m-2 col-lg-1 " >
+                     <div id="id{{loop.index}}" class="card p-1 bg-success  {% if image.Label == 'Correct' %}bg-success{% elif image.Label == 'Incorrect'%}bg-danger {% elif image.Label == 'Unsure'%}bg-light{% endif %}">
+                         <img class="card-img-top mb-1" src="{{ "data:image/jpeg;base64,"+image.EM}}" alt="Card image cap" width="64px" height="64px">
+                        <img class="card-img-top " src="{{ "data:image/jpeg;base64,"+image.GT}}" alt="Card image cap" width="64px" height="64px" >
+                        <a href="#" id="id-a-{{loop.index}}" class="stretched-link image-card-btn" page="{{page}}" data_id="{{ loop.index }}" label="{% if image.Label == 'Correct' %}Correct{% elif image.Label == 'Incorrect'%}Incorrect{% elif image.Label == 'Unsure'%}Unsure{% endif %}"></a>
+                     </div>
+                </div>
+        {% endfor %}
+        </div>
+    </div>
+    <nav aria-label="Page navigation example mt-5">
+      <ul class="pagination justify-content-center">
+          {% if page > 0 %}
+              <li class="page-item"><a class="page-link" href={{ url_for('annotation', page=page-1)}}>< Previous</a></li>
+          {% else %}
+              <li class="page-item disabled"><a class="page-link " href="#">< Previous</a></li>
+          {% endif %}
+          <li class="page-item"><a class="page-link" href={{ url_for('final_page')}}>Finish</a></li>
+          {% if page+1 < n_pages %}
+            <li class="page-item"><a class="page-link" href={{ url_for('annotation', page=page+1)}}>Next ></a></li>
+          {% else %}
+            <li class="page-item disabled"><a class="page-link" href="#">Next ></a></li>
+          {% endif %}
+      </ul>
+    </nav>
+    <script src="{{ url_for('static', filename='app.js') }}"></script>
+{% endblock %}
