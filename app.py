@@ -12,7 +12,7 @@ app.config["SESSION_TYPE"] = "filesystem"
 Session(app)
 
 app.config['UPLOAD_FOLDER'] = 'files/'
-app.config['UPLOAD_EXTENSIONS'] = ['.json', 'h5']
+app.config['UPLOAD_EXTENSIONS'] = ['.json', '.h5']
 
 
 @app.route('/')
