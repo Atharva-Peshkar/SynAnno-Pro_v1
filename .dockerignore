@@ -1,0 +1,6 @@
+# Frontend
+venv/
+__pycache__/
+*.idea/
+flask_session/
+files/
