@@ -1,4 +1,4 @@
-import data_processing.synAnno_processing as ip
+import synAnno_processing as ip
 import os, shutil
 from flask import Flask, render_template, session, flash, jsonify, request, send_file, redirect
 from flask_session import Session
@@ -38,7 +38,9 @@ def upload_file():
         if original_name!="error" and gt_name!="error":
             print("h5 files. call the ohter code")
             final_json = ip.loading_3d_file(os.path.join(app.config['UPLOAD_FOLDER'], file_original.filename), os.path.join(app.config['UPLOAD_FOLDER'], file_gt.filename))
-            filename = save_file(final_json)
+            filename = "finaljson.json"
+            with open(app.config['UPLOAD_FOLDER'] + filename, 'w') as f:
+                json.dump(final_json, f)
             return render_template("opendata.html", filename=filename, modecurrent="disabled", modeform="formFileDisabled")
     elif file_json.filename == '':
         flash("Please, upload the original and ground truth .h5 files or a JSON file!")
