@@ -4,6 +4,7 @@
 ### Locally
 ##### Requirements
 - Python 3 (https://www.python.org/downloads/)
+- Hardware: 1-8 Nvidia GPUs with at least 12G GPU memory (change SYSTEM.NUM_GPU accordingly based on the configuration of your machine)
 ##### Instructions
 1. Clone this repository to your system.</li>
 2. Navigate to the cloned repository using your terminal. </br>
