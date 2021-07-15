@@ -13,7 +13,7 @@
 4. Launch the app and start annotating!</br>
 ```python -m flask run``` 
 5. Access </br>
-```localhost:5000``` 
+```localhost:8080``` 
 
 ### With Docker
 ##### Requirements
@@ -25,9 +25,9 @@
 3. Create the docker image. </br>
 ``` docker build --tag "name" .```
 4. Run the docker image. </br>
-``` docker run --publish 5000:5000 "name"```
+``` docker run --publish 8080:8080 "name"```
 5. Access </br>
-```localhost:5000```
+```localhost:8080```
 
 ### Additional instructions
 1. If starting a new proofreading task, upload the .h5 files, proofread and remember to save the results at the end. It is going to take some minutes to load the .h5 files, do not worry. 
