@@ -4,6 +4,8 @@ from flask import Flask, render_template, session, flash, jsonify, request, send
 from flask_session import Session
 from werkzeug.utils import secure_filename
 import json
+import jsonschema
+from jsonschema import validate
 
 app = Flask(__name__)
 app.secret_key = 'BAD_SECRET_KEY'
@@ -23,6 +25,7 @@ def open_data():
 #opening json for now
 @app.route('/upload', methods=['POST'])
 def upload_file():
+    #Check if files folder exists, if not create.
     if os.path.exists('./files'):
         pass
     else:
@@ -43,17 +46,30 @@ def upload_file():
         if original_name!="error" and gt_name!="error":
             print("h5 files. call the ohter code")
             final_json = ip.loading_3d_file(os.path.join(app.config['UPLOAD_FOLDER'], file_original.filename), os.path.join(app.config['UPLOAD_FOLDER'], file_gt.filename))
-            filename = "finaljson.json"
-            with open(app.config['UPLOAD_FOLDER'] + filename, 'w') as f:
-                json.dump(final_json, f)
-            return render_template("opendata.html", filename=filename, modecurrent="disabled", modeform="formFileDisabled")
+            #Verify if the json is valid
+            if validate_json(final_json):
+                filename = "finaljson.json"
+                with open(app.config['UPLOAD_FOLDER'] + filename, 'w') as f:
+                    json.dump(final_json, f)
+                return render_template("opendata.html", filename=filename, modecurrent="disabled", modeform="formFileDisabled")
+            else:
+                print("JSON has not the correct format")
+                flash("Something is wrong with the loaded data! Check the data and load again.")
+                return render_template("opendata.html", modenext="disabled")
     elif file_json.filename == '':
         flash("Please, upload the original and ground truth .h5 files or a JSON file!")
     elif file_json.filename != '':
         filename = save_file(file_json)
         if filename != "error":
-            return render_template("opendata.html", filename=filename, modecurrent="disabled", modeform="formFileDisabled")
-
+            #Verify if the json is valid
+            f = open(app.config['UPLOAD_FOLDER'] + filename)
+            final_json = json.load(f)
+            if validate_json(final_json):
+                return render_template("opendata.html", filename=filename, modecurrent="disabled", modeform="formFileDisabled")
+            else:
+                print("JSON has not the correct format")
+                flash("Something is wrong with the loaded data! Check the data and load again.")
+                return render_template("opendata.html", modenext="disabled")
     return render_template("opendata.html", modenext="disabled")
 
 
@@ -68,6 +84,7 @@ def set_data(data_name='synanno.json'):
     #Open the json data and save it to the session
     f = open(app.config['UPLOAD_FOLDER'] + data_name) #tratar erro
     data = json.load(f)
+
     if not session.get('data'):
         session['data'] = [data['Data'][i:i+per_page] for i in range(0, len(data['Data']),per_page)]
 
@@ -166,5 +183,15 @@ def save_file(file):
     return("ok")
 
 
+def validate_json(json_data):
+    f = open("json_schema.json")
+    json_schema = json.load(f)
+    try:
+        validate(instance=json_data, schema=json_schema)
+    except jsonschema.exceptions.ValidationError as err:
+        return False
+    return True
+
+
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=500)
+    app.run(host='0.0.0.0', port=8080)

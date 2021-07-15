@@ -4,6 +4,7 @@ __pycache__/
 *.idea/
 flask_session/
 files/
+cloudbuild.json
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
