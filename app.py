@@ -51,6 +51,7 @@ def upload_file():
                 filename = "finaljson.json"
                 with open(app.config['UPLOAD_FOLDER'] + filename, 'w') as f:
                     json.dump(final_json, f)
+                flash("Data ready!")
                 return render_template("opendata.html", filename=filename, modecurrent="disabled", modeform="formFileDisabled")
             else:
                 print("JSON has not the correct format")
@@ -65,6 +66,7 @@ def upload_file():
             f = open(app.config['UPLOAD_FOLDER'] + filename)
             final_json = json.load(f)
             if validate_json(final_json):
+                flash("Data ready!")
                 return render_template("opendata.html", filename=filename, modecurrent="disabled", modeform="formFileDisabled")
             else:
                 print("JSON has not the correct format")
@@ -178,7 +180,6 @@ def save_file(file):
     else:
         file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
         print("saved file successfully")
-        flash("Data ready!")
         return(filename)
     return("ok")
 
