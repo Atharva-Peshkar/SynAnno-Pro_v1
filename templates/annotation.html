@@ -4,7 +4,7 @@
     <div class="container-fluid content-row mb-5 ">
         <div class="row card-group">
         {% for image in images %}
-                <div class="col-sm-12 m-2 col-lg-1 " >
+                <div class="col-sm-4 col-md-2 col-xl-1 m-2 col-lg-1 " >
                      <div id="id{{loop.index}}" class="card p-1 bg-success  {% if image.Label == 'Correct' %}bg-success{% elif image.Label == 'Incorrect'%}bg-danger {% elif image.Label == 'Unsure'%}bg-light{% endif %}">
                          <img class="card-img-top mb-1" src="{{ "data:image/jpeg;base64,"+image.EM}}" alt="Card image cap" width="64px" height="64px">
                         <img class="card-img-top " src="{{ "data:image/jpeg;base64,"+image.GT}}" alt="Card image cap" width="64px" height="64px" >
