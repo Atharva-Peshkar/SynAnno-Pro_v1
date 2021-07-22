@@ -1,0 +1,20 @@
+.correct{
+  background: rgb(134, 219, 115);
+}
+.card > correct {
+  background: rgb(134, 219, 115);
+}
+
+.incorrect{
+  background: rgb(245, 154, 165);
+}
+.card > .incorrect {
+  background: rgb(245, 154, 165);
+}
+
+.unsure{
+  background: rgb(255, 255, 255);
+}
+.card > .unsure {
+  background: rgb(255, 255, 255);
+}

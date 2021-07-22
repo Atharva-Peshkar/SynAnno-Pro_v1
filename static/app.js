@@ -13,13 +13,13 @@ $(document).ready(function() {
 
         req.done(function (data){
             if(label==='Unsure'){
-                $('#id'+data_id).removeClass('bg-light').addClass('bg-success');
+                $('#id'+data_id).removeClass('unsure').addClass('correct');
                 $('#id-a-'+data_id).attr('label', 'Correct');
             }else if(label==='Incorrect'){
-                $('#id'+data_id).removeClass('bg-danger').addClass('bg-light');
+                $('#id'+data_id).removeClass('incorrect').addClass('unsure');
                 $('#id-a-'+data_id).attr('label', 'Unsure');
             }else if(label==='Correct'){
-                $('#id' + data_id).removeClass('bg-success').addClass('bg-danger');
+                $('#id' + data_id).removeClass('correct').addClass('incorrect');
                 $('#id-a-' + data_id).attr('label', 'Incorrect');
             }
         });
