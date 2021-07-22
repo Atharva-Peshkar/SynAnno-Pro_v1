@@ -18,3 +18,6 @@
 .card > .unsure {
   background: rgb(255, 255, 255);
 }
+.card{
+  border: none;
+}

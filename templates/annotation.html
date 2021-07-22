@@ -5,7 +5,7 @@
         <div class="row card-group">
         {% for image in images %}
                 <div class="col-sm-4 col-md-2 col-xl-1 m-2 col-lg-1 " >
-                     <div id="id{{loop.index}}" class="card p-1 {% if image.Label == 'Correct' %}correct{% elif image.Label == 'Incorrect'%}incorrect{% elif image.Label == 'Unsure'%}unsure{% endif %}">
+                     <div id="id{{loop.index}}" class="card border-0 p-1 {% if image.Label == 'Correct' %}correct{% elif image.Label == 'Incorrect'%}incorrect{% elif image.Label == 'Unsure'%}unsure{% endif %}">
                          <img class="card-img-top mb-1" src="{{ "data:image/jpeg;base64,"+image.EM}}" alt="Card image cap" width="64px" height="64px">
                         <img class="card-img-top " src="{{ "data:image/jpeg;base64,"+image.GT}}" alt="Card image cap" width="64px" height="64px" >
                         <a href="#" id="id-a-{{loop.index}}" class="stretched-link image-card-btn" page="{{page}}" data_id="{{ loop.index }}" label="{% if image.Label == 'Correct' %}Correct{% elif image.Label == 'Incorrect'%}Incorrect{% elif image.Label == 'Unsure'%}Unsure{% endif %}"></a>
