@@ -29,5 +29,37 @@
           {% endif %}
       </ul>
     </nav>
+
+    <!-- Modal for synapse slyce-->
+    <div class="modal fade" id="detailsModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Synapse details</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+              <div class="center">
+                  <input type="range" class="form-range" min="0" max="30" id="customRange2">
+                  <div class="container">
+                      <div class="row">
+                          <div class="col justify-content-center">
+                              <button type="button" class="btn btn-outline-secondary btn-sm disabled float-start"> +15 </button>
+                          </div>
+                          <div class="col text-center">
+                              <button type="button" class="btn btn-secondary btn-sm ">Small button</button>
+                          </div>
+                          <div class="col justify-content-center">
+                              <button type="button" class="btn btn-outline-secondary btn-sm disabled float-end"> -15 </button>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- add js file to chang the card colors -->
     <script src="{{ url_for('static', filename='app.js') }}"></script>
 {% endblock %}
