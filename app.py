@@ -6,6 +6,7 @@ from werkzeug.utils import secure_filename
 import json
 import jsonschema
 from jsonschema import validate
+import sys
 
 app = Flask(__name__)
 app.secret_key = 'BAD_SECRET_KEY'
@@ -13,8 +14,10 @@ app.config["SESSION_PERMANENT"] = False
 app.config["SESSION_TYPE"] = "filesystem"
 Session(app)
 
-app.config['UPLOAD_FOLDER'] = 'files/'
+app.config['UPLOA' \
+           'D_FOLDER'] = 'files/'
 app.config['UPLOAD_EXTENSIONS'] = ['.json', '.h5']
+
 
 
 @app.route('/')
@@ -23,7 +26,7 @@ def open_data():
 
 
 #opening json for now
-@app.route('/upload', methods=['POST'])
+@app.route('/upload', methods=['GET', 'POST'])
 def upload_file():
     #Check if files folder exists, if not create.
     if os.path.exists('./files'):
@@ -44,8 +47,7 @@ def upload_file():
         original_name = save_file(file_original)
         gt_name = save_file(file_gt)
         if original_name!="error" and gt_name!="error":
-            print("h5 files. call the ohter code")
-            final_json = ip.loading_3d_file(os.path.join(app.config['UPLOAD_FOLDER'], file_original.filename), os.path.join(app.config['UPLOAD_FOLDER'], file_gt.filename))
+            final_json = json.loads(ip.loading_3d_file(os.path.join(app.config['UPLOAD_FOLDER'], file_original.filename), os.path.join(app.config['UPLOAD_FOLDER'], file_gt.filename)))
             #Verify if the json is valid
             if validate_json(final_json):
                 filename = "finaljson.json"
@@ -59,12 +61,15 @@ def upload_file():
                 return render_template("opendata.html", modenext="disabled")
     elif file_json.filename == '':
         flash("Please, upload the original and ground truth .h5 files or a JSON file!")
+    # Check if the process will happen with json file
     elif file_json.filename != '':
         filename = save_file(file_json)
         if filename != "error":
             #Verify if the json is valid
             f = open(app.config['UPLOAD_FOLDER'] + filename)
             final_json = json.load(f)
+            print("Size da variavel entrada")
+            print(sys.getsizeof(final_json))
             if validate_json(final_json):
                 flash("Data ready!")
                 return render_template("opendata.html", filename=filename, modecurrent="disabled", modeform="formFileDisabled")
@@ -184,9 +189,13 @@ def save_file(file):
     return("ok")
 
 
+
+
 def validate_json(json_data):
-    f = open("json_schema.json")
+    f = open("static/json_schema.json")
     json_schema = json.load(f)
+    print("Json schema size")
+    print(sys.getsizeof(json_schema))
     try:
         validate(instance=json_data, schema=json_schema)
     except jsonschema.exceptions.ValidationError as err:

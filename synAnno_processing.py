@@ -48,11 +48,11 @@ def json_creator(syn_path,img_path):
 
     final_file["Data"] = item_list
 
-    #json_obj = json.dumps(final_file,indent=4)
+    json_obj = json.dumps(final_file, indent=4)
 
     #with open("synAnno.json", "w") as outfile:
         #outfile.write(json_obj)
-    return final_file
+    return json_obj
 
 # Processing the synpases using binary dilation as well as by removing small objects.
 def process_syn(gt, small_thres=16):
@@ -206,7 +206,7 @@ def rot(syn,syn_path,im,img_path,img_name,thres_dilation=5,a=0.79):
 
 def loading_3d_file(im_file, gt_file):
     # Loading the 3D data. Ensure this matches the user input.
-    gt = readvol(gt_file)        #The labelled file (Ground Truth: GT)
+    gt = readvol(gt_file)    #The labelled file (Ground Truth: GT)
     im = readvol(im_file)    #The original Image (EM)
 
 #Creating the directory structure to store output data.
@@ -225,4 +225,4 @@ def loading_3d_file(im_file, gt_file):
         rot(syn,syn_path,im,img_path,img_name,a=0.7)
 
 # Creating and exporting the JSON file.
-    return json_creator(syn_path,img_path)
+    return json_creator(syn_path, img_path)
