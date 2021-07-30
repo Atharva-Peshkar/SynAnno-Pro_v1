@@ -14,6 +14,7 @@ tensorboard>=2.2.2
 einops>=0.3.0
 torchvision>=0.9.0
 flask>=2.0.0
+flask-cors
 Flask-Session>= 0.4.0
 jsonschema>=3.2.0
 h5py==2.10.0

@@ -2,6 +2,7 @@ import synAnno_processing as ip
 import os, shutil
 from flask import Flask, render_template, session, flash, jsonify, request, send_file, redirect
 from flask_session import Session
+from flask_cors import CORS, cross_origin
 from werkzeug.utils import secure_filename
 import json
 import jsonschema
@@ -9,6 +10,7 @@ from jsonschema import validate
 import sys
 
 app = Flask(__name__)
+CORS(app, support_credentials=True)
 app.secret_key = 'BAD_SECRET_KEY'
 app.config["SESSION_PERMANENT"] = False
 app.config["SESSION_TYPE"] = "filesystem"
@@ -172,6 +174,17 @@ def update_card():
     print(data[page][index]['Label'])
 
     return jsonify({'result':'success', 'label': data[page][index]['Label']})
+
+
+@app.route('/get_slice_before', methods=['GET'])
+@cross_origin(supports_credentials=True)
+def get_slice_before(page, data_id):
+    page = int(request.form['page'])
+    index = int(request.form['data_id']) - 1
+
+    data = session.get('data')
+
+    return jsonify(data[page][index]['Before'])
 
 
 def save_file(file):

@@ -6,9 +6,9 @@
         {% for image in images %}
                 <div class="col-sm-4 col-md-2 col-xl-1 m-2 col-lg-1 " >
                      <div id="id{{loop.index}}" class="card border-0 p-2 {% if image.Label == 'Correct' %}correct{% elif image.Label == 'Incorrect'%}incorrect{% elif image.Label == 'Unsure'%}unsure{% endif %}">
-                         <img class="card-img-top mb-1" src="{{ "data:image/jpeg;base64,"+image.EM}}" alt="Card image cap" width="64px" height="64px">
-                        <img class="card-img-top " src="{{ "data:image/jpeg;base64,"+image.GT}}" alt="Card image cap" width="64px" height="64px" >
-                        <a href="#" id="id-a-{{loop.index}}" class="stretched-link image-card-btn" page="{{page}}" data_id="{{ loop.index }}" label="{% if image.Label == 'Correct' %}Correct{% elif image.Label == 'Incorrect'%}Incorrect{% elif image.Label == 'Unsure'%}Unsure{% endif %}"></a>
+                         <img id="imgOriginal-{{loop.index}}" class="card-img-top mb-1" src="{{ "data:image/jpeg;base64,"+image.EM}}" alt="Card image cap" width="64px" height="64px">
+                         <img id="imgGT-{{loop.index}}" class="card-img-top " src="{{ "data:image/jpeg;base64,"+image.GT}}" alt="Card image cap" width="64px" height="64px" >
+                         <a href="#" id="id-a-{{loop.index}}" class="stretched-link image-card-btn" page="{{page}}" data_id="{{ loop.index }}" label="{% if image.Label == 'Correct' %}Correct{% elif image.Label == 'Incorrect'%}Incorrect{% elif image.Label == 'Unsure'%}Unsure{% endif %}"  slices_b="{{image.Before}}" slices_a="{{image.After}}"></a>
                      </div>
                 </div>
         {% endfor %}
@@ -39,6 +39,10 @@
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
+              <div id="cardDetails" class="card border-0 p-2">
+                  <img id="imgDetails" class="card-img-top mb-1" src="" width="64px" height="64px">
+                  <a href="#" id="" class="stretched-link image-card-btn"></a>
+              </div>
               <div class="center">
                   <input type="range" class="form-range" min="0" max="30" id="customRange2">
                   <div class="container">

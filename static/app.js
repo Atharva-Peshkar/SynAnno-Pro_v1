@@ -7,7 +7,7 @@ $(document).ready(function() {
 
         req = $.ajax({
             url: '/update-card',
-            type: 'POST',
+            type: 'GET',
             data: {data_id: data_id, page: page, label: label}
         });
 
@@ -22,6 +22,28 @@ $(document).ready(function() {
                 $('#id' + data_id).removeClass('correct').addClass('incorrect');
                 $('#id-a-' + data_id).attr('label', 'Incorrect');
             }
+        });
+    });
+
+    $('.image-card-btn').bind("contextmenu",function(e){
+        e.preventDefault();
+        var data_id = $(this).attr('data_id')
+        var page = $(this).attr('page')
+        var label = $(this).attr('label')
+        var slices_before = $(this).attr('slices_b')
+        var slices_after = $(this).attr('slices_a')
+
+        req = $.ajax({
+            url: '//get_slice_before',
+            type: 'GET',
+            data: {data_id: data_id, page: page}
+        });
+
+        req.done(function (data) {
+            console.log(data)
+            $('#cardDetails').addClass(label.toLowerCase());
+            $('#imgDetails').attr("src", '{{"data:image/jpeg;base64,"+' + data[0] + "}}");
+            $('#detailsModal').modal("show");
         });
     });
 });
