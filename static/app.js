@@ -7,7 +7,7 @@ $(document).ready(function() {
 
         req = $.ajax({
             url: '/update-card',
-            type: 'GET',
+            type: 'POST',
             data: {data_id: data_id, page: page, label: label}
         });
 
@@ -34,15 +34,15 @@ $(document).ready(function() {
         var slices_after = $(this).attr('slices_a')
 
         req = $.ajax({
-            url: '//get_slice_before',
-            type: 'GET',
+            url: '/get_slice_before',
+            type: 'POST',
             data: {data_id: data_id, page: page}
         });
 
         req.done(function (data) {
             console.log(data)
             $('#cardDetails').addClass(label.toLowerCase());
-            $('#imgDetails').attr("src", '{{"data:image/jpeg;base64,"+' + data[0] + "}}");
+            $('#imgDetails').attr("src", "data:image/jpeg;base64," + data[0]);
             $('#detailsModal').modal("show");
         });
     });
