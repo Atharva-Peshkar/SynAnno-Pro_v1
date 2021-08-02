@@ -30,20 +30,47 @@ $(document).ready(function() {
         var data_id = $(this).attr('data_id')
         var page = $(this).attr('page')
         var label = $(this).attr('label')
-        var slices_before = $(this).attr('slices_b')
-        var slices_after = $(this).attr('slices_a')
+        var strSlice = 0;
 
         req = $.ajax({
-            url: '/get_slice_before',
+            url: '/get_slice',
             type: 'POST',
-            data: {data_id: data_id, page: page}
+            data: {data_id: data_id, page: page, slice: strSlice}
         });
 
         req.done(function (data) {
-            console.log(data)
+            console.log(data);
+
+            $('#rangeSlices').attr("min", "-"+data.halfLen);
+            $('#rangeSlices').attr("max", data.halfLen);
+            $('#rangeSlices').attr("value", strSlice);
+            $('#rangeSlices').attr("data_id", data_id);
+            $('#rangeSlices').attr("page", page);
+
+            $('#minSlice').html("-"+data.halfLen);
+            $('#maxSlice').html(data.halfLen);
+
             $('#cardDetails').addClass(label.toLowerCase());
-            $('#imgDetails').attr("src", "data:image/jpeg;base64," + data[0]);
+            $('#imgDetails').attr("src", "data:image/jpeg;base64," + data.data);
             $('#detailsModal').modal("show");
         });
     });
+
+    $('#rangeSlices').change( function() {
+        var rangeValue = $(this).val();
+        console.log(rangeValue)
+        var data_id = $(this).attr('data_id')
+        var page = $(this).attr('page')
+
+        req = $.ajax({
+            url: '/get_slice',
+            type: 'POST',
+            data: {data_id: data_id, page: page, slice: rangeValue}
+        });
+
+        req.done(function (data){
+            $('#imgDetails').attr("src", "data:image/jpeg;base64," + data.data);
+        });
+    });
+
 });

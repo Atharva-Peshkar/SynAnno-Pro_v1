@@ -177,15 +177,21 @@ def update_card():
     return jsonify({'result':'success', 'label': data[page][index]['Label']})
 
 
-@app.route('/get_slice_before', methods=['POST'])
+@app.route('/get_slice', methods=['POST'])
 @cross_origin()
-def get_slice_before():
+def get_slice():
     page = int(request.form['page'])
     index = int(request.form['data_id']) - 1
+    slice = int(request.form['slice'])
 
     data = session.get('data')
+    halfLen = len(data[page][index]['Before'])
+    if slice <= 0:
+        final_json = jsonify(data=data[page][index]['Before'][slice], halfLen=halfLen)
+    if slice > 0:
+        final_json = jsonify(data=data[page][index]['After'][slice], halfLen=halfLen)
 
-    return jsonify(data[page][index]['Before'])
+    return final_json
 
 
 def save_file(file):
