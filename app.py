@@ -10,14 +10,14 @@ from jsonschema import validate
 import sys
 
 app = Flask(__name__)
-CORS(app, support_credentials=True)
+CORS(app)
+app.config['CORS_HEADERS'] = 'Content-Type'
 app.secret_key = 'BAD_SECRET_KEY'
 app.config["SESSION_PERMANENT"] = False
 app.config["SESSION_TYPE"] = "filesystem"
 Session(app)
 
-app.config['UPLOA' \
-           'D_FOLDER'] = 'files/'
+app.config['UPLOAD_FOLDER'] = 'files/'
 app.config['UPLOAD_EXTENSIONS'] = ['.json', '.h5']
 
 
@@ -156,6 +156,7 @@ def export_data():
 
 
 @app.route('/update-card', methods=['POST'])
+@cross_origin()
 def update_card():
     page = int(request.form['page'])
     index = int(request.form['data_id'])-1
@@ -176,9 +177,9 @@ def update_card():
     return jsonify({'result':'success', 'label': data[page][index]['Label']})
 
 
-@app.route('/get_slice_before', methods=['GET'])
-@cross_origin(supports_credentials=True)
-def get_slice_before(page, data_id):
+@app.route('/get_slice_before', methods=['POST'])
+@cross_origin()
+def get_slice_before():
     page = int(request.form['page'])
     index = int(request.form['data_id']) - 1
 
