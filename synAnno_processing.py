@@ -248,12 +248,11 @@ def rot(syn, syn_path, im, img_path, img_name, thres_dilation=5, a=0.79):
     # compute rotatation by cleft
     # cleft: overlap for the dilated pre-/post-partner
     dilation_mask = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (thres_dilation, thres_dilation))
-    cleft = cv2.dilate((syn > 0).astype(np.uint8), dilation_mask)
-    if cleft.max() == 0:
-        cleft = syn > 0
+    cleft = cv2.dilate((syn>0).astype(np.uint8),dilation_mask)
+
     pt = np.where(cleft > 0)
     if pt[0].min() == pt[0].max():
-        w = 100;
+        w = 100
         w2 = 0
         angle = 90
     else:
@@ -264,9 +263,11 @@ def rot(syn, syn_path, im, img_path, img_name, thres_dilation=5, a=0.79):
             # angle concensus
             # pt[0]: x
             # pt[1]: y
-            w, _, _, _, _ = linregress(pt[0], pt[1])
+            pt0_x = pt[0]/max(pt[0])
+            pt1_y = pt[1]/max(pt[1])
+            w, _, _, _, _ = linregress(pt0_x, pt1_y)
             angle = np.arctan(w) / np.pi * 180
-            w2, _, _, _, _ = linregress(pt[1], pt[0])
+            w2, _, _, _, _ = linregress(pt1_y, pt0_x)
             angle2 = np.arctan(w2) / np.pi * 180
             # if abs((angle+angle2)-90)>20:
             # trust the small one
@@ -332,6 +333,9 @@ def rot(syn, syn_path, im, img_path, img_name, thres_dilation=5, a=0.79):
 
 # Creating a plot with the EM and GT images together (Used for before/after slices)
 def fig_creator(syn, img, save_path, fig_name):
+    import matplotlib
+    matplotlib.use('Agg')
+    import matplotlib.pyplot as plt 
     plt.figure(figsize=(8, 4))
     plt.subplot(121)
     plt.imshow(img, cmap='gray')
