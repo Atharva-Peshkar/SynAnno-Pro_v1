@@ -143,7 +143,7 @@ def dir_creator(parent_dir_path, dir_name):
     return os.path.join(parent_dir_path, dir_name)
 
 
-def visualize(syn, seg, img, sz=100, rgb=False):
+def visualize(syn, seg, img, sz=142, rgb=False):
     item_list = []
 
     final_file = dict()
@@ -334,13 +334,13 @@ def rot(syn, syn_path, im, img_path, img_name, thres_dilation=5, a=0.79):
 def fig_creator(syn, img, save_path, fig_name):
     plt.figure(figsize=(8, 4))
     plt.subplot(121)
-    plt.imshow(img, cmap='gray');
+    plt.imshow(img, cmap='gray')
     plt.axis("off")
     plt.subplot(122)
-    plt.imshow(syn);
+    plt.imshow(syn)
     plt.axis("off")
     plt.savefig(save_path + fig_name)
-
+    plt.close()
 
 # Encoding images using base 64 encoding.
 def b64_encoder(image_path):
