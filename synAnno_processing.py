@@ -90,7 +90,10 @@ def bbox2_ND(img):
     out = []
     for ax in itertools.combinations(reversed(range(N)), N - 1):
         nonzero = np.any(img, axis=ax)
-        out.extend(np.where(nonzero)[0][[0, -1]])
+        try:
+            out.extend(np.where(nonzero)[0][[0, -1]])
+        except:
+            continue
     return tuple(out)
 
 
@@ -146,93 +149,96 @@ def dir_creator(parent_dir_path, dir_name):
 def visualize(syn, seg, img, sz=142, rgb=False):
     item_list = []
 
-    final_file = dict()
-    seg_idx = np.unique(seg)[1:]  # ignore background
-
+    final_file= dict()
+    seg_idx = np.unique(seg)[1:] # ignore background
+    
     # Creating the temporary-directory structure for storing images.
-    idx_dir = dir_creator('.', 'Images')
-    syn_mid, img_mid = dir_creator(idx_dir, 'Syn_Mid'), dir_creator(idx_dir, 'Img_Mid')
-    before, after = dir_creator(idx_dir, 'Before'), dir_creator(idx_dir, 'After')
-    syn_before, img_before = dir_creator(before, 'Syn'), dir_creator(before, 'Img')
-    syn_after, img_after = dir_creator(after, 'Syn'), dir_creator(after, 'Img')
-
-    # Processing and iterating over the synapses, subsequently saving the middle slices and before/after slices for 3D navigation.
+    idx_dir = dir_creator('.','Images')
+    syn_mid,img_mid = dir_creator(idx_dir,'Syn_Mid'),dir_creator(idx_dir,'Img_Mid')
+    before,after = dir_creator(idx_dir,'Before'),dir_creator(idx_dir,'After')
+    syn_before,img_before = dir_creator(before,'Syn'),dir_creator(before,'Img')
+    syn_after,img_after =  dir_creator(after,'Syn'),dir_creator(after,'Img')
+    
+    #Processing and iterating over the synapses, subsequently saving the middle slices and before/after slices for 3D navigation.
     for idx in seg_idx:
-
-        # Creating directories for every synapse in Before/After directories.
-        syn_nav_before, img_nav_before = dir_creator(syn_before, str(idx)), dir_creator(img_before, str(idx))
-        syn_nav_after, img_nav_after = dir_creator(syn_after, str(idx)), dir_creator(img_after, str(idx))
-
+        
+        #Creating directories for every synapse in Before/After directories.
+        syn_nav_before,img_nav_before = dir_creator(syn_before,str(idx)),dir_creator(img_before,str(idx))
+        syn_nav_after,img_nav_after = dir_creator(syn_after,str(idx)),dir_creator(img_after,str(idx))
+        
         item = dict()
         temp = (seg == idx)
         bbox = bbox2_ND(temp)
-
+        
         z_mid = (bbox[0] + bbox[1]) // 2
         temp_2d = temp[z_mid]
         bbox_2d = bbox2_ND(temp_2d)
-        y1, y2 = bbox_adjust(bbox_2d[0], bbox_2d[1], sz)
-        x1, x2 = bbox_adjust(bbox_2d[2], bbox_2d[3], sz)
-        crop_2d = [y1, y2, x1, x2]
-        cropped_syn = crop_pad_data(syn, z_mid, crop_2d, mask=temp)
-        cropped_img = crop_pad_data(img, z_mid, crop_2d, pad_val=128)
-
-        if rgb:
-            cropped_syn = syn2rgb(cropped_syn)
-
-        assert cropped_syn.shape == (sz, sz, 3) or cropped_syn.shape == (sz, sz)
-        plt.imsave(os.path.join(syn_mid, str(idx) + '.png'), cropped_syn, cmap='gray')
-        plt.imsave(os.path.join(img_mid, str(idx) + '.png'), cropped_img, cmap='gray')
-
-        # Saving before and after slices for 3D navigation.
-        before = [x for x in range(bbox[0], z_mid)]
-        after = [x for x in range(z_mid, bbox[1] + 1)]
-        before_processed_img = []
-        after_processed_img = []
-
-        # Before
-        for navimg in before:
-
-            temp_2d = temp[navimg]
-            bbox_2d = bbox2_ND(temp_2d)
+        if(len(bbox_2d)==4):
             y1, y2 = bbox_adjust(bbox_2d[0], bbox_2d[1], sz)
             x1, x2 = bbox_adjust(bbox_2d[2], bbox_2d[3], sz)
             crop_2d = [y1, y2, x1, x2]
-            cropped_img = crop_pad_data(img, navimg, crop_2d, pad_val=128)
-            cropped_syn = crop_pad_data(syn, navimg, crop_2d, mask=temp)
+            cropped_syn = crop_pad_data(syn, z_mid, crop_2d, mask=temp)
+            cropped_img = crop_pad_data(img, z_mid, crop_2d, pad_val=128)
 
             if rgb:
                 cropped_syn = syn2rgb(cropped_syn)
-                param = 0.79
-                cropped_im_dark = np.stack((cropped_img * param, cropped_img * param, cropped_img * param), axis=2)
-                cropped_img = np.stack((cropped_img, cropped_img, cropped_img), axis=2)
-                cropped_im_dark = cropped_im_dark.astype(np.uint8)
-                cropped_syn = np.maximum(cropped_im_dark, cropped_syn)
+            
+            assert cropped_syn.shape==(sz,sz,3) or cropped_syn.shape==(sz,sz) 
+            plt.imsave(os.path.join(syn_mid,str(idx)+'.png'),cropped_syn,cmap='gray')
+            plt.imsave(os.path.join(img_mid,str(idx)+'.png'),cropped_img,cmap='gray')
+        
+            #Saving before and after slices for 3D navigation.
+            before = [x for x in range(bbox[0],z_mid)]
+            after = [x for x in range(z_mid,bbox[1]+1)]
+            before_processed_img = []
+            after_processed_img = []
+            
+            #Before
+            for navimg in before:
+                
+                temp_2d = temp[navimg]
+                bbox_2d = bbox2_ND(temp_2d)
+                if(len(bbox_2d)==4):
+                    y1, y2 = bbox_adjust(bbox_2d[0], bbox_2d[1], sz)
+                    x1, x2 = bbox_adjust(bbox_2d[2], bbox_2d[3], sz)
+                    crop_2d = [y1, y2, x1, x2]
+                    cropped_img = crop_pad_data(img, navimg, crop_2d, pad_val=128)
+                    cropped_syn = crop_pad_data(syn, navimg, crop_2d, mask=temp)
 
-            assert cropped_syn.shape == (sz, sz, 3) or cropped_syn.shape == (sz, sz)
-            plt.imsave(os.path.join(syn_nav_before, str(navimg) + '.png'), cropped_syn, cmap='gray')
-            plt.imsave(os.path.join(img_nav_before, str(navimg) + '.png'), cropped_img, cmap='gray')
+                    if rgb:
+                        cropped_syn = syn2rgb(cropped_syn)
+                        param = 0.79
+                        cropped_im_dark = np.stack((cropped_img*param,cropped_img*param,cropped_img*param),axis=2)
+                        cropped_img = np.stack((cropped_img,cropped_img,cropped_img),axis=2)
+                        cropped_im_dark = cropped_im_dark.astype(np.uint8)
+                        cropped_syn = np.maximum(cropped_im_dark,cropped_syn)
+                    
+                    assert cropped_syn.shape==(sz,sz,3) or cropped_syn.shape==(sz,sz) 
+                    plt.imsave(os.path.join(syn_nav_before,str(navimg)+'.png'),cropped_syn,cmap='gray')
+                    plt.imsave(os.path.join(img_nav_before,str(navimg)+'.png'),cropped_img,cmap='gray')
+                
+            # After
+            for navimg in after:
+                temp_2d = temp[navimg]
+                bbox_2d = bbox2_ND(temp_2d)
+                if(len(bbox_2d)==4):
+                    y1, y2 = bbox_adjust(bbox_2d[0], bbox_2d[1], sz)
+                    x1, x2 = bbox_adjust(bbox_2d[2], bbox_2d[3], sz)
+                    crop_2d = [y1, y2, x1, x2]
+                    cropped_img = crop_pad_data(img, navimg, crop_2d, pad_val=128)
+                    cropped_syn = crop_pad_data(syn, navimg, crop_2d, mask=temp)
 
-        # After
-        for navimg in after:
-            temp_2d = temp[navimg]
-            bbox_2d = bbox2_ND(temp_2d)
-            y1, y2 = bbox_adjust(bbox_2d[0], bbox_2d[1], sz)
-            x1, x2 = bbox_adjust(bbox_2d[2], bbox_2d[3], sz)
-            crop_2d = [y1, y2, x1, x2]
-            cropped_img = crop_pad_data(img, navimg, crop_2d, pad_val=128)
-            cropped_syn = crop_pad_data(syn, navimg, crop_2d, mask=temp)
-
-            if rgb:
-                cropped_syn = syn2rgb(cropped_syn)
-                param = 0.79
-                cropped_im_dark = np.stack((cropped_img * param, cropped_img * param, cropped_img * param), axis=2)
-                cropped_img = np.stack((cropped_img, cropped_img, cropped_img), axis=2)
-                cropped_im_dark = cropped_im_dark.astype(np.uint8)
-                cropped_syn = np.maximum(cropped_im_dark, cropped_syn)
-
-            assert cropped_syn.shape == (sz, sz, 3) or cropped_syn.shape == (sz, sz)
-            plt.imsave(os.path.join(syn_nav_after, str(navimg) + '.png'), cropped_syn, cmap='gray')
-            plt.imsave(os.path.join(img_nav_after, str(navimg) + '.png'), cropped_img, cmap='gray')
+                    if rgb:
+                        cropped_syn = syn2rgb(cropped_syn)
+                        param = 0.79
+                        cropped_im_dark = np.stack((cropped_img*param,cropped_img*param,cropped_img*param),axis=2)
+                        cropped_img = np.stack((cropped_img,cropped_img,cropped_img),axis=2)
+                        cropped_im_dark = cropped_im_dark.astype(np.uint8)
+                        cropped_syn = np.maximum(cropped_im_dark,cropped_syn)
+                
+                    assert cropped_syn.shape==(sz,sz,3) or cropped_syn.shape==(sz,sz) 
+                    plt.imsave(os.path.join(syn_nav_after,str(navimg)+'.png'),cropped_syn,cmap='gray')
+                    plt.imsave(os.path.join(img_nav_after,str(navimg)+'.png'),cropped_img,cmap='gray')  
 
         # Rotating the images based on given rotation parameters (Used to rotate before/after slices using the mid slice rotation parameters)
 
