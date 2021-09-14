@@ -1,5 +1,5 @@
 var start = 0;
-const fc = 0.9;
+const fc = 2.2;
 var totaltime = 0;
 var percent = 0;
 

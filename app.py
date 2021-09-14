@@ -7,6 +7,7 @@ from werkzeug.utils import secure_filename
 import json
 import jsonschema
 from jsonschema import validate
+import base64
 import sys
 
 app = Flask(__name__)
@@ -101,6 +102,10 @@ def set_data(data_name='synanno.json'):
 
     #Calculate the number of pages (based on 100 per page) and save it to the session
     number_images = len(data['Data'])
+    if number_images == 0:
+        print("No images found")
+        flash("No synapses found in this data. Try another one.")
+        return render_template("opendata.html", modenext="disabled")
     number_pages = number_images // per_page
     if not (number_images % per_page == 0):
         number_pages = number_pages + 1
@@ -186,10 +191,50 @@ def get_slice():
 
     data = session.get('data')
     halfLen = len(data[page][index]['Before'])
-    if slice <= 0:
+    if slice < 0:
         final_json = jsonify(data=data[page][index]['Before'][slice], halfLen=halfLen)
-    if slice > 0:
+    if slice >= 0:
         final_json = jsonify(data=data[page][index]['After'][slice], halfLen=halfLen)
+
+    return final_json
+
+
+@app.route('/save_slices', methods=['POST'])
+@cross_origin()
+def save_slices():
+    page = int(request.form['page'])
+    index = int(request.form['data_id']) - 1
+    slice = int(request.form['slice'])
+
+    data = session.get('data')
+    halfLen = len(data[page][index]['Before'])
+    if slice < 0:
+        final_json = jsonify(data=data[page][index]['Before'][slice], halfLen=halfLen)
+    if slice >= 0:
+        final_json = jsonify(data=data[page][index]['After'][slice], halfLen=halfLen)
+
+    slices_dir = ip.dir_creator('.', 'slices')
+    print("diretorio")
+    print(slices_dir)
+    x=len(data[page][index]['Before'])+1
+    print("x ante de iniciar loop")
+    print(x)
+    for image in data[page][index]['After']:
+        imgdata = base64.b64decode(image)
+        with open(os.path.join(slices_dir,str(x)+'.png'), "wb") as fh:
+            fh.write(imgdata)
+        x=x+1
+        print("valor antes de salvar")
+        print(x)
+
+    x = len(data[page][index]['Before'])-1
+    for image in data[page][index]['Before']:
+        imgdata = base64.b64decode(image)
+        with open(os.path.join(slices_dir,str(x)+'.png'), "wb") as fh:
+            fh.write(imgdata)
+        print("valor antes de salvar 2")
+        print(x)
+        x=x-1
 
     return final_json
 
